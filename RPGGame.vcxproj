@@ -170,6 +170,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PreCompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="SettingState.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />

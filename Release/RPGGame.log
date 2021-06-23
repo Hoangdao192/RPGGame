@@ -1,0 +1,16 @@
+﻿  Button.cpp
+  DropDownList.cpp
+E:\Code\Project\RPGGame\RPGGame\DropDownList.cpp(22,20): warning C4018: '<': signed/unsigned mismatch
+  EditorState.cpp
+  Game.cpp
+  GameState.cpp
+  Main.cpp
+  MainMenuState.cpp
+  PauseMenu.cpp
+  SettingState.cpp
+  Generating code
+  8 of 1018 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    11 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  RPGGame.vcxproj -> E:\Code\Project\RPGGame\Release\RPGGame.exe

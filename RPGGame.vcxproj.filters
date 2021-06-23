@@ -90,9 +90,6 @@
     <ClCompile Include="PauseMenu.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">

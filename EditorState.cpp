@@ -42,16 +42,29 @@ void EditorState::initButtons()
 {
 }
 
+void EditorState::initPauseMenu()
+{
+	this->pauseMenu = new PauseMenu(*this->window, this->font);
+	this->pauseMenu->addButton("QUIT", 420, "Quit");
+}
+
+void EditorState::initTileMap()
+{
+	this->tileMap = new TileMap(this->stateData->gridSize, 10,10);
+}
+
 //Constructor/Destructor
 
-EditorState::EditorState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
-	:State(window, supportedKeys, states)
+EditorState::EditorState(StateData* state_data)
+	:State(state_data)
 {
 	this->initVariables();
 	this->initBackground();
 	this->initFonts();
 	this->initKeybinds();
+	this->initPauseMenu();
 	this->initButtons();
+	this->initTileMap();
 }
 
 EditorState::~EditorState()
@@ -60,16 +73,20 @@ EditorState::~EditorState()
 	{
 		delete it->second;
 	}
+
+	delete this->pauseMenu;
+
+	delete this->tileMap;
 }
 
 //Functions
 
 void EditorState::updateInput(const float& delta_time)
 {
-	//Update player input (convert int to enum Key)
-	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)this->keybinds.at("CLOSE")))
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key) this->keybinds["CLOSE"]) && this->getKeyTime())
 	{
-		this->endState();
+		if (!this->paused) { this->pauseState(); }
+		else { this->unpauseState(); }
 	}
 }
 
@@ -84,10 +101,28 @@ void EditorState::updateButtons()
 	}
 }
 
+void EditorState::updatePauseMenuButtons()
+{
+	if (this->pauseMenu->isButtonPressed("QUIT"))
+		this->endState();
+}
+
 void EditorState::update(const float& delta_time)
 {
 	this->updateMousePosition();
+	this->updateKeyTime(delta_time); 
 	this->updateInput(delta_time);
+
+	if (!this->paused)	//Unpaused
+	{
+		this->updateButtons();
+	}
+	else
+	{
+		this->pauseMenu->update(this->mousePosView);
+		this->updatePauseMenuButtons();
+	}
+
 	this->updateButtons();
 }
 
@@ -110,6 +145,13 @@ void EditorState::render(sf::RenderTarget* target)
 
 
 	this->renderButtons(*target);
+
+	this->tileMap->render(*target);
+
+	if (this->paused)
+	{
+		this->pauseMenu->render(*target);
+	}
 
 	//REMOVE LATER!!!
 	sf::Text mouseText;

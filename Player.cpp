@@ -49,7 +49,6 @@ void Player::updateAnimation(const float& dt)
 	
 	if (this->attacking)
 	{
-		//Sleep(1000);
 		//Set origin depending on facing on direction
 		if (this->sprite.getScale().x > 0.f)	//Facing left
 		{
@@ -74,7 +73,7 @@ void Player::updateAnimation(const float& dt)
 			}
 		}
 	}
-	//else
+	
 	if (this->movementComponent->getState(IDLE))
 	{
 		this->animationComponent->play("IDLE", dt);
@@ -112,6 +111,5 @@ void Player::update(const float& dt)
 	this->movementComponent->update(dt);
 	this->updateAnimation(dt);
 	this->updateAttack();
-	std::cout << animationComponent->getPlay() << "\n";
 	this->hitbboxComponent->update();
 }

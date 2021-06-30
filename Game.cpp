@@ -9,64 +9,52 @@
 void Game::initVariables()
 {
     this->window = NULL;
-    this->fullscreen = false;
-
     this->deltaTime = 0.f;
-    
+
+    this->gridSize = 50.f;
+}
+
+void Game::initGraphicSettings()
+{
+    this->graphicSettings.loadFromFile("Config/graphics.ini");
+}
+
+void Game::initStateData()
+{
+    this->stateData.window = this->window;
+    this->stateData.gfxSettings = &this->graphicSettings;
+    this->stateData.supportedKeys = &this->supportedKeys;
+    this->stateData.states = &this->states;
+    this->stateData.gridSize = this->gridSize;
 }
 
 void Game::initWindow()
 {
     /*Create a SFML Window using options from a Window.ini file.*/
-
-    std::fstream file("Config/window.ini", std::ios::in);
-    this->videoModes = sf::VideoMode::getFullscreenModes();
-
-    //  Default values
-    std::string title = "None";
-    sf::VideoMode window_bounds = sf::VideoMode::getDesktopMode();
-    bool fullscreen = false;
-    unsigned framerate_limit = 120;
-    bool vertical_sync_enabled = false;
-    unsigned int antialiasing_level = 0;
-
-    //  Read from file
-    if (file.is_open())
-    {
-        std::getline(file, title);
-        file >> window_bounds.width >> window_bounds.height;
-        file >> fullscreen;
-        file >> framerate_limit;
-        file >> vertical_sync_enabled;
-        file >> antialiasing_level;
-    }
-    else
-    {
-        std::cout << "Cannot open file Config/window.ini";
-    }
-    file.close();
-
-    //  Create SFML Window
-    this->fullscreen = fullscreen;
-    this->windowSettings.antialiasingLevel = antialiasing_level;
-    if (this->fullscreen)
+    if (this->graphicSettings.fullscreen)
     {
         // Create fullscreen SFML window
-        this->window = new sf::RenderWindow(window_bounds, title, sf::Style::Fullscreen, this->windowSettings);
+        this->window = new sf::RenderWindow(
+            this->graphicSettings.resolution, 
+            this->graphicSettings.title, sf::Style::Fullscreen, 
+            this->graphicSettings.contextSettings);
     }
     else
     {
         // Create default SFML window and not resizeable
-        this->window = new sf::RenderWindow(window_bounds, title, sf::Style::Titlebar | sf::Style::Close, this->windowSettings);
+        this->window = new sf::RenderWindow(
+            this->graphicSettings.resolution, 
+            this->graphicSettings.title, sf::Style::Titlebar | sf::Style::Close, 
+            this->graphicSettings.contextSettings);
     }
 	
-    this->window->setFramerateLimit(framerate_limit);
-    this->window->setVerticalSyncEnabled(vertical_sync_enabled);
+    this->window->setFramerateLimit(this->graphicSettings.frameRateLimit);
+    this->window->setVerticalSyncEnabled(this->graphicSettings.vsync);
 }
 
 void Game::initStates()
 {
-    this->states.push(new MainMenuState(this->window, &this->supportedKeys, &this->states));
+    this->states.push(new MainMenuState(&this->stateData));
     //this->states.push(new GameState(this->window, &this->supportedKeys));
 }
 
@@ -91,8 +79,11 @@ void Game::initKeys()
 //	Construcstors/Destrucstors
 Game::Game()
 {
+    this->initVariables();
+    this->initGraphicSettings();
     this->initWindow();
     this->initKeys();
+    this->initStateData();
     this->initStates();
 }
 
@@ -104,6 +95,9 @@ Game::~Game()
         delete this->states.top();
         this->states.pop();
     }
+
+    //Save graphic setting
+    graphicSettings.saveToFile("Config/graphics.ini");
 }
 
 

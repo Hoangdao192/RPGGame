@@ -2,12 +2,33 @@
 #define STATE_H
 
 #include "Player.h"
+#include "GraphicSettings.h"
+
+class Player;
+class GraphicsSettings;
+
+class State;
+
+class StateData
+{
+public:
+	StateData() {}
+
+	//Variable
+	float gridSize;
+	sf::RenderWindow* window;
+	GraphicSettings* gfxSettings;
+	std::map<std::string, int>* supportedKeys;
+	std::stack<State*>* states;
+
+};
 
 class State
 {
 private:
 
 protected:
+	StateData* stateData;
 	std::stack<State*>* states;
 
 	sf::RenderWindow* window;
@@ -17,6 +38,7 @@ protected:
 	bool paused;
 	float keyTime;
 	float keyTimeMax;
+	float gridSize;
 
 	sf::Vector2i mousePosScreen;
 	sf::Vector2i mousePosWindow;
@@ -29,7 +51,7 @@ protected:
 	virtual void initKeybinds() = 0;
 
 public:
-	State(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states);
+	State(StateData* state_data);
 	virtual ~State();
 
 	//Accessors

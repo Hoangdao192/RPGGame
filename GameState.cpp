@@ -40,6 +40,11 @@ void GameState::initPlayers()
 	this->player = new Player(0, 0, this->textures["PLAYER_SHEET"]);
 }
 
+void GameState::initTileMap()
+{
+	this->tileMap = new TileMap(this->stateData->gridSize, 10, 10);
+}
+
 void GameState::initFonts()
 {
 	if (!this->font.loadFromFile("Fonts/Quicksand.ttf"))
@@ -52,20 +57,22 @@ void GameState::initFonts()
 
 //Constructor/Destructor
 
-GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
-	:State(window, supportedKeys, states)
+GameState::GameState(StateData* state_data)
+	:State(state_data)
 {
 	this->initFonts();
 	this->initKeybinds();
 	this->initTextures();
 	this->initPauseMenu();
 	this->initPlayers();
+	this->initTileMap();
 }
 
 GameState::~GameState()
 {
 	delete this->player;
 	delete this->pauseMenu;
+	delete this->tileMap;
 }
 
 void GameState::updatePlayerInput(const float& delta_time)
@@ -132,6 +139,9 @@ void GameState::render(sf::RenderTarget* target)
 		std::cout << "\ntarget not set. set to default = window";
 		target = this->window;
 	}
+
+	//this->tileMap.render(*target);
+
 	this->player->render(*target);
 
 	if (this->paused)	//Paused menu render

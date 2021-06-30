@@ -1,26 +1,19 @@
 #ifndef TILE_H
 #define TILE_H
-#define NOMINMAX 0
-
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <Windows.h>
-#include <SFML\Graphics.hpp>
-#include <SFML\Window.hpp>
-#include <SFML\System.hpp>
 
 class Tile
 {
 private:
 
 protected:
-
+	sf::RectangleShape shape;
 public:
-	Tile();
-
+	Tile(float x, float y, float gridSizeF);
 	virtual ~Tile();
+
+	//Functions
+	void update();
+	void render(sf::RenderTarget& target);
 };
 
 #endif // !TILE_H

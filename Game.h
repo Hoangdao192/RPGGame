@@ -7,11 +7,10 @@ class Game
 {
 private:
 	//	Variables
+	GraphicSettings graphicSettings;
+	StateData stateData;
 	sf::RenderWindow *window;
 	sf::Event sfEvent;
-	std::vector<sf::VideoMode> videoModes;
-	sf::ContextSettings windowSettings;
-	bool fullscreen;
 
 	sf::Clock dtClock;
 	float deltaTime;
@@ -20,8 +19,12 @@ private:
 
 	std::map < std::string , int > supportedKeys;
 
+	float gridSize;
+
 	//	Intialization
 	void initVariables();
+	void initGraphicSettings();
+	void initStateData();
 	void initWindow();
 	void initStates();
 	void initKeys();

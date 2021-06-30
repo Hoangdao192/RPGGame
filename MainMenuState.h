@@ -4,8 +4,8 @@
 #include "GameState.h"
 #include "EditorState.h"
 #include "SettingState.h"
-
 #include "GUI.h"
+
 using namespace Gui;
 
 class MainMenuState
@@ -27,7 +27,7 @@ private:
     void initButtons();
 
 public:
-    MainMenuState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states);
+    MainMenuState(StateData* state_data);
     virtual ~MainMenuState();
 
     //Functions

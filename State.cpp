@@ -22,15 +22,17 @@ void State::mousePosDraw(sf::RenderTarget& target)
 
 //Constructor/Destructor
 
-State::State(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
+State::State(StateData* state_data)
 {
-	this->window = window;
-	this->supportedKeys = supportedKeys;
+	this->stateData = state_data;
+	this->window = state_data->window;
+	this->supportedKeys = state_data->supportedKeys;
 	this->quit = false;
-	this->states = states;
+	this->states = state_data->states;
 	this->paused = false;
 	this->keyTime = 0.f;
 	this->keyTimeMax = 10.f;
+	this->gridSize = state_data->gridSize;
 }
 
 State::~State()

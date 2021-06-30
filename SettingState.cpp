@@ -93,8 +93,8 @@ void SettingState::initText()
 
 //Constructor/Descontructor
 
-SettingState::SettingState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
-	:State(window, supportedKeys, states)
+SettingState::SettingState(StateData* state_data)
+	:State(state_data)
 {
 	this->initVariables();
 	this->initBackground();
@@ -147,7 +147,8 @@ void SettingState::updateGui(const float& delta_time)
 	//Apply selected settings
 	if (this->buttons["APPLY"]->isPressed())
 	{
-		this->window->create(this->videoModes.at(this->dropDownLists["RESOLUTION"]->getActiveElementId()), "RPG_Game");
+		this->stateData->gfxSettings->resolution = this->videoModes.at(this->dropDownLists["RESOLUTION"]->getActiveElementId());
+		this->window->create(this->stateData->gfxSettings->resolution, this->stateData->gfxSettings->title);
 	}
 
 	//Dropdown lists

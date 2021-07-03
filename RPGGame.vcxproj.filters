@@ -96,6 +96,9 @@
     <ClCompile Include="PreCompile.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="TextureSelector.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">

@@ -172,6 +172,7 @@
     </ClCompile>
     <ClCompile Include="SettingState.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="TextureSelector.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>

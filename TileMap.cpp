@@ -75,7 +75,9 @@ void TileMap::render(sf::RenderTarget& target)
 	}
 }
 
-void TileMap::addTile(const unsigned x, const unsigned y, const unsigned z, const sf::IntRect& texture_rect)
+void TileMap::addTile(const unsigned x, const unsigned y, const unsigned z, 
+	const sf::IntRect& texture_rect,
+	const bool collision, const short type)
 {
 	/*Take two indicies from the mouse position in the grid and add a tile to that position
 	if the internal tilemap array allows it.*/
@@ -86,17 +88,22 @@ void TileMap::addTile(const unsigned x, const unsigned y, const unsigned z, cons
 		if (this->map[x][y][z] == nullptr)
 		{
 			/*OK to add tile.*/
-			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, this->tileSheet, texture_rect);
+			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, this->tileSheet, texture_rect, collision, type);
 		}
 	}
 }
 
 void TileMap::removeTile(const unsigned x, const unsigned y, const unsigned z)
 {
-	if (this->map[x][y][z] != nullptr)
+	if (x < this->maxSize.x && x >= 0
+		&& y >= 0 && y < this->maxSize.y
+		&& z < this->layers && z >= 0)
 	{
-		delete this->map[x][y][z];
-		this->map[x][y][z] = nullptr;
+		if (this->map[x][y][z] != nullptr)
+		{
+			delete this->map[x][y][z];
+			this->map[x][y][z] = nullptr;
+		}
 	}
 }
 
@@ -108,8 +115,11 @@ void TileMap::clear()
 		{
 			for (size_t z = 0; z < this->layers; ++z)
 			{
-				delete this->map[x][y][z];
-				this->map[x][y][z] = nullptr;
+				if (this->map[x][y][z] != nullptr)
+				{
+					delete this->map[x][y][z];
+					this->map[x][y][z] = nullptr;
+				}
 			}
 		}
 	}
@@ -120,7 +130,7 @@ void TileMap::saveToFile(const std::string file_name)
 	/*Saves the entire tilemap to a text file
 	Format:
 	- Basic - 
-	Size x y
+	Size x y layers
 	gridSize
 	texture file path
 
@@ -156,6 +166,8 @@ void TileMap::saveToFile(const std::string file_name)
 
 void TileMap::loadFromFile(const std::string file_name)
 {
+	this->clear();
+
 	std::fstream file(file_name, std::ios::in);
 
 	if (!file.is_open())
@@ -178,8 +190,6 @@ void TileMap::loadFromFile(const std::string file_name)
 	this->layers = layers;
 	this->textureFile = texture_path;
 
-	this->clear();
-
 	this->map.resize(this->maxSize.x);
 	for (size_t x = 0; x < this->maxSize.x; ++x)
 	{
@@ -201,7 +211,6 @@ void TileMap::loadFromFile(const std::string file_name)
 
 	while (file >> x >> y >> z >> trX >> trY >> collision >> type)
 	{
-		std::cout << x << " " << y << " " << z << " " << trX << " " << trY << " " << collision << " " << type << std::endl;
 		this->map[x][y][z] = new Tile(x, y, this->gridSizeF, this->tileSheet, sf::IntRect(trX, trY, gridSize, gridSize), collision, type);
 	}
 

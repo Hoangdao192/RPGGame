@@ -5,19 +5,28 @@
 #include "PauseMenu.h"
 #include "TileMap.h"
 
+class PauseMenu;
+class Player;
+class TileMap;
+
 class GameState :
     public State
 {
 private:
     //Variables
+    sf::View view;
+    sf::RenderTexture renderTexture;
+    sf::Sprite renderSprite;
+
     sf::Font font;
     sf::Texture texture;
     Player* player;
     PauseMenu *pauseMenu;
 
     TileMap* tileMap;
-    //TileMap map;
     //Functions
+    void initDeferredRender();
+    void initView();
     void initFonts();
     void initKeybinds();
     void initTextures();
@@ -29,6 +38,7 @@ public:
     virtual ~GameState();
 
     //Functions
+    void updateView(const float& dt);
     void updatePlayerInput(const float& delta_time);
     void updateInput(const float& dt);
     void updatePauseMenuButtons();

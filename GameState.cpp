@@ -43,6 +43,29 @@ void GameState::initPlayers()
 void GameState::initTileMap()
 {
 	this->tileMap = new TileMap(this->stateData->gridSize, 10, 10, "Resources/Images/Tiles/tilesheet1.png");
+	this->tileMap->loadFromFile("tilemap.txt");
+}
+
+void GameState::initDeferredRender()
+{
+	this->renderTexture.create(
+		this->stateData->gfxSettings->resolution.width,
+		this->stateData->gfxSettings->resolution.height);
+
+	this->renderSprite.setTexture(this->renderTexture.getTexture());
+	this->renderSprite.setTextureRect(sf::IntRect(
+		0, 0, this->stateData->gfxSettings->resolution.width,
+		this->stateData->gfxSettings->resolution.height));
+}
+
+void GameState::initView()
+{
+	this->view.setSize(sf::Vector2f(
+		this->stateData->gfxSettings->resolution.width,
+		this->stateData->gfxSettings->resolution.height));
+	this->view.setCenter(sf::Vector2f(
+		this->stateData->gfxSettings->resolution.width / 2.f,
+		this->stateData->gfxSettings->resolution.height / 2.f));
 }
 
 void GameState::initFonts()
@@ -60,6 +83,8 @@ void GameState::initFonts()
 GameState::GameState(StateData* state_data)
 	:State(state_data)
 {
+	this->initDeferredRender();
+	this->initView();
 	this->initFonts();
 	this->initKeybinds();
 	this->initTextures();
@@ -73,6 +98,11 @@ GameState::~GameState()
 	delete this->player;
 	delete this->pauseMenu;
 	delete this->tileMap;
+}
+
+void GameState::updateView(const float& dt)
+{
+	this->view.setCenter(this->player->getPosition().x+100, this->player->getPosition().y+150);
 }
 
 void GameState::updatePlayerInput(const float& delta_time)
@@ -116,7 +146,8 @@ void GameState::updatePauseMenuButtons()
 
 void GameState::update(const float& delta_time)
 {
-	this->updateMousePosition();	
+	this->updateMousePosition(&this->view);	
+	this->updateView(delta_time);
 	this->updateKeyTime(delta_time);
 	this->updateInput(delta_time);
 	
@@ -127,25 +158,35 @@ void GameState::update(const float& delta_time)
 	}
 	else //Paused update
 	{
-		this->pauseMenu->update(this->mousePosView);
+		this->pauseMenu->update(this->mousePosWindow);
 		this->updatePauseMenuButtons();
 	}
 }
 
 void GameState::render(sf::RenderTarget* target)
 {
+	this->renderTexture.clear();
+
 	if (!target)
 	{
 		std::cout << "\ntarget not set. set to default = window";
 		target = this->window;
 	}
 
-	//this->tileMap.render(*target);
+	this->renderTexture.setView(this->view);
+	this->tileMap->render(this->renderTexture);
 
-	this->player->render(*target);
+	this->player->render(this->renderTexture);
 
 	if (this->paused)	//Paused menu render
 	{
-		this->pauseMenu->render(*target);
+		this->renderTexture.setView(this->renderTexture.getDefaultView());
+		this->pauseMenu->render(this->renderTexture);
 	}
+
+	//FINAL RENDER
+	//this->renderTexture.setSmooth(true);
+	this->renderTexture.display();
+	this->renderSprite.setTexture(this->renderTexture.getTexture());
+	target->draw(this->renderSprite);
 }

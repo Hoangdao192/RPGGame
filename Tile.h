@@ -12,17 +12,20 @@ class Tile
 private:
 
 protected:
-	float x, y;
 	sf::RectangleShape shape;
 	bool collision;
 	short type;
 public:
-	Tile(unsigned grid_x, unsigned grid_y, float gridSizeF, sf::Texture& texture,
+	Tile(int grid_x, int grid_y, float gridSizeF, sf::Texture& texture,
 		const sf::IntRect& texture_rect, bool collision = false, short type = TileType::DEFAULT);
 	virtual ~Tile();
 
+	//Accessors
+	const bool getCollision() const;
+	const bool intersects(const sf::FloatRect bounds) const;
+	const sf::FloatRect getGlobalBounds() const;
 	const std::string getAsString() const;
-	sf::Vector2f getPosition() { return sf::Vector2f(x, y); }
+	const sf::Vector2f getPosition() const;
 
 	//Functions
 	void update();

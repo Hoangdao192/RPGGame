@@ -38,6 +38,9 @@ public:
 
 	//Functions
 	const bool getState(const short unsigned state);
+	void stopVelocity();
+	void stopVelocityX();
+	void stopVelocityY();
 
 	void move(const float dir_x, const float dir_y, const float& delta_time);
 	void update(const float& dt);

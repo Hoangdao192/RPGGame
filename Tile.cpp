@@ -1,16 +1,14 @@
 #include "PreCompile.h"
 #include "Tile.h"
 
-Tile::Tile(unsigned grid_x, unsigned grid_y, float gridSizeF, sf::Texture& texture, 
+Tile::Tile(int grid_x, int grid_y, float gridSizeF, sf::Texture& texture,
 	const sf::IntRect& texture_rect, bool collision, short type)
 {
-	this->x = grid_x;
-	this->y = grid_y;
 	this->shape.setSize(sf::Vector2f(gridSizeF, gridSizeF));
 	this->shape.setFillColor(sf::Color::White);
 	//this->shape.setOutlineThickness(1);
 	//this->shape.setOutlineColor(sf::Color::Black);
-	this->shape.setPosition(x * gridSizeF, y * gridSizeF);
+	this->shape.setPosition(grid_x * gridSizeF, grid_y * gridSizeF);
 	this->shape.setTexture(&texture);
 	this->shape.setTextureRect(texture_rect);
 
@@ -24,6 +22,11 @@ Tile::~Tile()
 
 //Accessors
 
+const bool Tile::getCollision() const
+{
+	return this->collision;
+}
+
 const std::string Tile::getAsString() const
 {
 	std::stringstream ss;
@@ -34,7 +37,22 @@ const std::string Tile::getAsString() const
 	return ss.str();
 }
 
+const sf::Vector2f Tile::getPosition() const
+{
+	return this->shape.getPosition();
+}
+
 //Functions
+
+const bool Tile::intersects(const sf::FloatRect bounds) const
+{
+	return this->shape.getGlobalBounds().intersects(bounds);
+}
+
+const sf::FloatRect Tile::getGlobalBounds() const
+{
+	return this->shape.getGlobalBounds();
+}
 
 void Tile::update()
 {

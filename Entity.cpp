@@ -7,7 +7,7 @@ void Entity::initVariables()
 {
 	this->movementComponent = NULL;
 	this->animationComponent = NULL;
-	this->hitbboxComponent = NULL;
+	this->hitboxComponent = NULL;
 }
 
 //Constructor/Destructor
@@ -28,9 +28,9 @@ Entity::~Entity()
 	{
 		delete this->animationComponent;
 	}
-	if (this->hitbboxComponent)
+	if (this->hitboxComponent)
 	{
-		delete this->hitbboxComponent;
+		delete this->hitboxComponent;
 	}
 }
 
@@ -45,7 +45,7 @@ void Entity::createHitboxComponent(sf::Sprite& sprite,
 	float offset_x, float offset_y,
 	float width, float height)
 {
-	this->hitbboxComponent = new HitboxComponent(sprite, offset_x, offset_y, width, height);
+	this->hitboxComponent = new HitboxComponent(sprite, offset_x, offset_y, width, height);
 }
 
 void Entity::createMovementComponent(const float maxVelocity, const float acceleration, const float deceleration)
@@ -60,23 +60,74 @@ void Entity::createAnimationComponent(sf::Texture& texture_sheet)
 
 const sf::Vector2f Entity::getPosition() const
 {
+	if (this->hitboxComponent)
+	{
+		return this->hitboxComponent->getPosition();
+	}
 	return this->sprite.getPosition();
+}
+
+const sf::Vector2u Entity::getGridPosition(const unsigned gridSizeU) const
+{
+	if (this->hitboxComponent)
+	{
+		return sf::Vector2u(
+			(unsigned)this->hitboxComponent->getPosition().x / gridSizeU,
+			(unsigned)this->hitboxComponent->getPosition().y / gridSizeU);
+	}
+	else
+	{
+		return sf::Vector2u(
+			(unsigned)this->sprite.getPosition().x / gridSizeU,
+			(unsigned)this->sprite.getPosition().y / gridSizeU);
+	}
+}
+
+const sf::FloatRect Entity::getGlobalBounds() const
+{
+	if (this->hitboxComponent)
+	{
+		return this->hitboxComponent->getGlobalBounds();
+	}
+	return this->sprite.getGlobalBounds();
+}
+
+const sf::FloatRect Entity::getNextPositionBounds(const float& dt) const
+{
+	if (this->hitboxComponent && this->movementComponent)
+	{
+		return this->hitboxComponent->getNextPosition(this->movementComponent->getVelocity() * dt);
+	}
+
+	return sf::FloatRect(-1.f, -1.f, -1.f, -1.f);
 }
 
 //Functions
 
 void Entity::setPosition(const float x, const float y)
 {
-	this->sprite.setPosition(x, y);
+	if (this->hitboxComponent) { this->hitboxComponent->setPosition(sf::Vector2f(x, y)); }
+	else { this->sprite.setPosition(x, y); }
 }
 
 void Entity::move(const float dir_x, const float dir_y, const float& delta_time)
 {
-	if (this->movementComponent)
-	{
-		//Set velocity
-		this->movementComponent->move(dir_x, dir_y, delta_time);
-	}
+	if (this->movementComponent) { this->movementComponent->move(dir_x, dir_y, delta_time); }
+}
+
+void Entity::stopVelocity()
+{
+	if (this->movementComponent) { this->movementComponent->stopVelocity(); }
+}
+
+void Entity::stopVelocityX()
+{
+	if (this->movementComponent) { this->movementComponent->stopVelocityX(); }
+}
+
+void Entity::stopVelocityY()
+{
+	if (this->movementComponent) { this->movementComponent->stopVelocityY(); }
 }
 
 void Entity::update(const float& delta_time)
@@ -87,10 +138,8 @@ void Entity::render(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
 
-	if (this->hitbboxComponent)
+	if (this->hitboxComponent)
 	{
-		this->hitbboxComponent->render(target);
+		this->hitboxComponent->render(target);
 	}
-
-	std::cout << this->sprite.getOrigin().x << " " << this->sprite.getOrigin().y << "\n";
 }

@@ -61,8 +61,8 @@ void GameState::initDeferredRender()
 void GameState::initView()
 {
 	this->view.setSize(sf::Vector2f(
-		this->stateData->gfxSettings->resolution.width,
-		this->stateData->gfxSettings->resolution.height));
+		(float) this->stateData->gfxSettings->resolution.width,
+		(float) this->stateData->gfxSettings->resolution.height));
 	this->view.setCenter(sf::Vector2f(
 		this->stateData->gfxSettings->resolution.width / 2.f,
 		this->stateData->gfxSettings->resolution.height / 2.f));
@@ -102,7 +102,7 @@ GameState::~GameState()
 
 void GameState::updateView(const float& dt)
 {
-	this->view.setCenter(this->player->getPosition().x+100, this->player->getPosition().y+150);
+	this->view.setCenter(std::floor(this->player->getPosition().x+100), std::floor(this->player->getPosition().y+150));
 }
 
 void GameState::updatePlayerInput(const float& delta_time)
@@ -144,16 +144,23 @@ void GameState::updatePauseMenuButtons()
 	}
 }
 
+void GameState::updateTileMap(const float& dt)
+{
+	this->tileMap->update();
+	this->tileMap->updateCollision(this->player, dt);
+}
+
 void GameState::update(const float& delta_time)
 {
 	this->updateMousePosition(&this->view);	
-	this->updateView(delta_time);
 	this->updateKeyTime(delta_time);
 	this->updateInput(delta_time);
-	
+
 	if (!this->paused)	//Unpaused update
 	{
+		this->updateView(delta_time);
 		this->updatePlayerInput(delta_time);
+		this->updateTileMap(delta_time);
 		this->player->update(delta_time);
 	}
 	else //Paused update
@@ -174,7 +181,7 @@ void GameState::render(sf::RenderTarget* target)
 	}
 
 	this->renderTexture.setView(this->view);
-	this->tileMap->render(this->renderTexture);
+	this->tileMap->render(this->renderTexture, this->player);
 
 	this->player->render(this->renderTexture);
 

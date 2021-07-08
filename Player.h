@@ -21,6 +21,7 @@ public:
     void updateAttack();
     void updateAnimation(const float& dt);
     virtual void update(const float& dt);
+    virtual void render(sf::RenderTarget& target);
     
 
 };

@@ -15,8 +15,8 @@ void EditorState::initView()
 {
 	//this->view.setSize(800, 800);
 	this->view.setSize(sf::Vector2f(
-		this->stateData->gfxSettings->resolution.width, 
-		this->stateData->gfxSettings->resolution.height));
+		(float) this->stateData->gfxSettings->resolution.width, 
+		(float) this->stateData->gfxSettings->resolution.height));
 	this->view.setCenter(
 		this->stateData->gfxSettings->resolution.width / 2.f,
 		this->stateData->gfxSettings->resolution.height / 2.f);
@@ -80,6 +80,8 @@ void EditorState::initGui()
 	this->selectorRect.setOutlineColor(sf::Color::Green);
 
 	this->textureSelector = new TextureSelector(0, 0, 500, 500, this->stateData->gridSize, this->tileMap->getTileSheet(), this->font);
+
+	
 }
 
 void EditorState::initPauseMenu()
@@ -145,19 +147,19 @@ void EditorState::updateEditorInput(const float& dt)
 	//Keyboard
 	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)this->keybinds.at("MOVE_CAMERA_UP")))
 	{
-		this->view.move(0.f, -this->cameraSpeed * dt);
+		this->view.move(0.f, -std::floor(this->cameraSpeed * dt));
 	}
 	else if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)this->keybinds.at("MOVE_CAMERA_DOWN")))
 	{
-		this->view.move(0.f, this->cameraSpeed * dt);
+		this->view.move(0.f, std::floor(this->cameraSpeed * dt));
 	}
 	else if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)this->keybinds.at("MOVE_CAMERA_RIGHT")))
 	{
-		this->view.move(this->cameraSpeed * dt, 0);
+		this->view.move(std::floor(this->cameraSpeed * dt), 0);
 	}
 	else if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)this->keybinds.at("MOVE_CAMERA_LEFT")))
 	{
-		this->view.move(-this->cameraSpeed * dt, 0);
+		this->view.move(-std::floor(this->cameraSpeed * dt), 0);
 	}
 	
 

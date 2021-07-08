@@ -110,7 +110,7 @@ void Game::update()
 {
     this->updateSFMLEvents();
 
-    if (!this->states.empty())
+    if (!this->states.empty() && this->window->hasFocus())
     {
         this->states.top()->update(deltaTime);
         if (this->states.top()->getQuit())
@@ -120,7 +120,7 @@ void Game::update()
             this->states.pop();
         }
     }
-    else
+    else if(this->states.empty())
         //Applicaiton end
     {
         this->endApplication();

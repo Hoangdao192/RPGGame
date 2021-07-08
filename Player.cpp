@@ -111,5 +111,10 @@ void Player::update(const float& dt)
 	this->movementComponent->update(dt);
 	this->updateAnimation(dt);
 	this->updateAttack();
-	this->hitbboxComponent->update();
+	this->hitboxComponent->update();
+}
+
+void Player::render(sf::RenderTarget& target)
+{
+	Entity::render(target);
 }

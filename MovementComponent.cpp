@@ -64,6 +64,23 @@ const bool MovementComponent::getState(const short unsigned state)
 	return false;
 }
 
+void MovementComponent::stopVelocity()
+{
+	/*Reset the velocity to 0.*/
+	this->stopVelocityX();
+	this->stopVelocityY();	
+}
+
+void MovementComponent::stopVelocityX()
+{
+	this->velocity.x = 0;
+}
+
+void MovementComponent::stopVelocityY()
+{
+	this->velocity.y = 0;
+}
+
 void MovementComponent::move(const float dir_x, const float dir_y, const float& delta_time)
 {
 	/*Accelerating a sprite until it reaches the max velocity*/

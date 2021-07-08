@@ -4,7 +4,7 @@ using namespace Gui;
 
 //Constructor/Destructor
 
-DropDownList::DropDownList(float x, float y, float w, float h, sf::Font& font, std::string list[], unsigned numberOfElements, unsigned default_index)
+DropDownList::DropDownList(float x, float y, float w, float h, sf::Font& font, std::string list[], int numberOfElements, int default_index)
 	:font(font)
 {
 	//unsigned numberOfElements = sizeof(list) / sizeof(std::string);

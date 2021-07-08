@@ -7,6 +7,7 @@ using namespace Gui;
 
 TextureSelector::TextureSelector(float x, float y, float width, float height, float gridSize, const sf::Texture* texture_sheet, sf::Font& font)
 {
+	this->keyTime = 0;
 	this->keyTimeMax = 10;
 
 	this->active = false;
@@ -27,12 +28,12 @@ TextureSelector::TextureSelector(float x, float y, float width, float height, fl
 	//Set the texture inside the bounds box
 	if (this->sheet.getGlobalBounds().width > this->bounds.getGlobalBounds().width)
 	{
-		this->sheet.setTextureRect(sf::IntRect(0, 0, this->bounds.getGlobalBounds().width, this->sheet.getGlobalBounds().height));
+		this->sheet.setTextureRect(sf::IntRect(0, 0, (int)this->bounds.getGlobalBounds().width, (int)this->sheet.getGlobalBounds().height));
 	}
 
 	if (this->sheet.getGlobalBounds().height > this->bounds.getGlobalBounds().height)
 	{
-		this->sheet.setTextureRect(sf::IntRect(0, 0, this->sheet.getGlobalBounds().width, this->bounds.getGlobalBounds().height));
+		this->sheet.setTextureRect(sf::IntRect(0, 0, (int)this->sheet.getGlobalBounds().width, (int)this->bounds.getGlobalBounds().height));
 	}
 
 	this->selector.setPosition(x, y);
@@ -41,8 +42,8 @@ TextureSelector::TextureSelector(float x, float y, float width, float height, fl
 	this->selector.setOutlineThickness(1);
 	this->selector.setOutlineColor(sf::Color::Red);
 
-	this->textureRect.width = gridSize;
-	this->textureRect.height = gridSize;
+	this->textureRect.width = (int)gridSize;
+	this->textureRect.height = (int)gridSize;
 
 	this->hideButton = new Button(x, y, 80, 80, &font,
 		"Texture\nSelector", 18,
@@ -120,8 +121,8 @@ void Gui::TextureSelector::update(const sf::Vector2i& mousePosWindow, const floa
 			);
 
 			//Update texture rectangle
-			this->textureRect.left = this->selector.getPosition().x - this->bounds.getPosition().x;
-			this->textureRect.top = this->selector.getPosition().y - this->bounds.getPosition().y;
+			this->textureRect.left = (int)this->selector.getPosition().x - (int)this->bounds.getPosition().x;
+			this->textureRect.top = (int)this->selector.getPosition().y - (int)this->bounds.getPosition().y;
 		}
 	}
 }

@@ -70,7 +70,7 @@ namespace Gui
 		bool showList;
 
 	public:
-		DropDownList(float x, float y, float w, float h, sf::Font& font, std::string list[], unsigned numberOfElements, unsigned default_index = 0);
+		DropDownList(float x, float y, float w, float h, sf::Font& font, std::string list[], int numberOfElements, int default_index = 0);
 		virtual ~DropDownList();
 
 		//Accessors

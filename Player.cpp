@@ -10,7 +10,7 @@ void Player::initVariables()
 
 void Player::initComponents()
 {
-	this->createMovementComponent(350.f, 15.f, 5.f);
+	this->createMovementComponent(350.f, 1500.f, 500.f);
 	this->createHitboxComponent(this->sprite, 86.f, 74.f, 86.f, 120.f);
 }
 

@@ -15,6 +15,7 @@ private:
 	sf::Vector2f maxSizeWorld;
 	int layers;
 	std::vector<std::vector<std::vector<std::vector<Tile*>>>> map;
+	std::stack<Tile*> defferedRenderStack;
 
 	std::string textureFile;
 	sf::Texture tileSheet;
@@ -37,10 +38,12 @@ public:
 
 	//Accessors
 	const sf::Texture* getTileSheet() const;
+	int getTilesInPos(int x, int y, int layer);
 
 	//Functions
 	void update();
-	void render(sf::RenderTarget& target, Entity* entity = nullptr);
+	void render(sf::RenderTarget& target, const sf::Vector2i& gridPosition);
+	void renderDeffered(sf::RenderTarget& target);
 
 	void addTile(const int x, const int y, const int z,
 		const sf::IntRect& texture_rect,

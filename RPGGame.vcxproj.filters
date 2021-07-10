@@ -99,6 +99,9 @@
     <ClCompile Include="TextureSelector.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="AttributeCompponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeCompponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

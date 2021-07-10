@@ -125,6 +125,7 @@ void GameState::updatePlayerInput(const float& delta_time)
 	{
 		this->player->move(0.f, 1.f, delta_time);
 	}
+
 }
 
 void GameState::updateInput(const float& dt)
@@ -181,9 +182,10 @@ void GameState::render(sf::RenderTarget* target)
 	}
 
 	this->renderTexture.setView(this->view);
-	this->tileMap->render(this->renderTexture, this->player);
+	this->tileMap->render(this->renderTexture, this->player->getGridPosition(this->stateData->gridSize));
 
 	this->player->render(this->renderTexture);
+	this->tileMap->renderDeffered(this->renderTexture);
 
 	if (this->paused)	//Paused menu render
 	{

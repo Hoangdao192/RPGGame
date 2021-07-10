@@ -4,7 +4,8 @@
 enum TileType
 {
 	DEFAULT = 0,
-	DAMAGING
+	DAMAGING,
+	RENDER_TOP
 };
 
 class Tile
@@ -26,6 +27,7 @@ public:
 	const sf::FloatRect getGlobalBounds() const;
 	const std::string getAsString() const;
 	const sf::Vector2f getPosition() const;
+	const short getType() const;
 
 	//Functions
 	void update();

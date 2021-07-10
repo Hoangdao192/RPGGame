@@ -42,6 +42,11 @@ const sf::Vector2f Tile::getPosition() const
 	return this->shape.getPosition();
 }
 
+const short Tile::getType() const
+{
+	return this->type;
+}
+
 //Functions
 
 const bool Tile::intersects(const sf::FloatRect bounds) const

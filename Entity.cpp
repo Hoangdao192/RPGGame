@@ -32,6 +32,10 @@ Entity::~Entity()
 	{
 		delete this->hitboxComponent;
 	}
+	if (this->attributeComponent)
+	{
+		delete this->attributeComponent;
+	}
 }
 
 //Component functions
@@ -58,6 +62,11 @@ void Entity::createAnimationComponent(sf::Texture& texture_sheet)
 	this->animationComponent = new AnimationComponent(this->sprite, texture_sheet);
 }
 
+void Entity::createAttributeComponent(const int level)
+{
+	this->attributeComponent = new AttributeCompponent(level);
+}
+
 const sf::Vector2f Entity::getPosition() const
 {
 	if (this->hitboxComponent)
@@ -67,19 +76,19 @@ const sf::Vector2f Entity::getPosition() const
 	return this->sprite.getPosition();
 }
 
-const sf::Vector2u Entity::getGridPosition(const unsigned gridSizeU) const
+const sf::Vector2i Entity::getGridPosition(const unsigned gridSizeU) const
 {
 	if (this->hitboxComponent)
 	{
-		return sf::Vector2u(
-			(unsigned)this->hitboxComponent->getPosition().x / gridSizeU,
-			(unsigned)this->hitboxComponent->getPosition().y / gridSizeU);
+		return sf::Vector2i(
+			(int)this->hitboxComponent->getPosition().x / gridSizeU,
+			(int)this->hitboxComponent->getPosition().y / gridSizeU);
 	}
 	else
 	{
-		return sf::Vector2u(
-			(unsigned)this->sprite.getPosition().x / gridSizeU,
-			(unsigned)this->sprite.getPosition().y / gridSizeU);
+		return sf::Vector2i(
+			(int)this->sprite.getPosition().x / gridSizeU,
+			(int)this->sprite.getPosition().y / gridSizeU);
 	}
 }
 

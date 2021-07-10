@@ -55,76 +55,77 @@ const sf::Texture* TileMap::getTileSheet() const
 	return &this->tileSheet;
 }
 
+int TileMap::getTilesInPos(int x, int y, int layer)
+{
+	if (x >= this->maxSizeGrid.x || x < 0
+		|| y >= this->maxSizeGrid.y || y < 0
+		|| layer < 0 || layer >= this->layers)
+	{
+		return -1;
+	}
+	return this->map[x][y][layer].size();
+}
+
 //Funtcions
 
 void TileMap::update()
 {
 }
 
-void TileMap::render(sf::RenderTarget& target, Entity* entity)
+void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPosition)
 {
-	if (entity)
+	this->layer = 0;
+
+	this->fromX = gridPosition.x - 4;
+	if (this->fromX < 0) { this->fromX = 0; }
+	else if (this->fromX > this->maxSizeGrid.x) { this->fromX = this->maxSizeGrid.x; }
+
+	this->toX = gridPosition.x + 5;
+	if (this->toX < 0) { this->toX = 0; }
+	else if (this->toX > this->maxSizeGrid.x) { this->toX = this->maxSizeGrid.x; }
+
+	this->fromY = gridPosition.y - 3;
+	if (this->fromY < 0) { this->fromY = 0; }
+	else if (this->fromY > this->maxSizeGrid.y) { this->fromY = this->maxSizeGrid.y; }
+
+	this->toY = gridPosition.y + 5;
+	if (this->toY < 0) { this->toY = 0; }
+	else if (this->toY > this->maxSizeGrid.y) { this->toY = this->maxSizeGrid.y; }
+
+	for (int x = this->fromX; x < this->toX; ++x)
 	{
-		this->layer = 0;
-		this->fromX = entity->getGridPosition(this->gridSizeI).x - 4;
-		if (this->fromX < 0) { this->fromX = 0; }
-		else if (this->fromX > this->maxSizeGrid.x) { this->fromX = this->maxSizeGrid.x; }
-
-		this->toX = entity->getGridPosition(this->gridSizeI).x + 5;
-		if (this->toX < 0) { this->toX = 0; }
-		else if (this->toX > this->maxSizeGrid.x) { this->toX = this->maxSizeGrid.x; }
-
-		this->fromY = entity->getGridPosition(this->gridSizeI).y - 3;
-		if (this->fromY < 0) { this->fromY = 0; }
-		else if (this->fromY > this->maxSizeGrid.y) { this->fromY = this->maxSizeGrid.y; }
-
-		this->toY = entity->getGridPosition(this->gridSizeI).y + 5;
-		if (this->toY < 0) { this->toY = 0; }
-		else if (this->toY > this->maxSizeGrid.y) { this->toY = this->maxSizeGrid.y; }
-
-		for (int x = this->fromX; x < this->toX; ++x)
+		for (int y = this->fromY; y < this->toY; ++y)
 		{
-			for (int y = this->fromY; y < this->toY; ++y)
+			for (int k = 0; k < this->map[x][y][this->layer].size(); ++k)
 			{
-				for (int k = 0; k < this->map[x][y][this->layer].size(); ++k)
+				if (this->map[x][y][this->layer][k] != nullptr)
 				{
-					if (this->map[x][y][this->layer][k] != nullptr)
+					if (this->map[x][y][this->layer][k]->getType() == TileType::RENDER_TOP)
+					{
+						this->defferedRenderStack.push(this->map[x][y][this->layer][k]);
+					}
+					else
 					{
 						this->map[x][y][this->layer][k]->render(target);
-						if (this->map[x][y][this->layer][k]->getCollision())
-						{
-							this->collisionBox.setPosition(this->map[x][y][this->layer][k]->getPosition());
-							target.draw(this->collisionBox);
-						}
+					}
+
+					if (this->map[x][y][this->layer][k]->getCollision())
+					{
+						this->collisionBox.setPosition(this->map[x][y][this->layer][k]->getPosition());
+						target.draw(this->collisionBox);
 					}
 				}
 			}
 		}
 	}
-	else
+}
+
+void TileMap::renderDeffered(sf::RenderTarget& target)
+{
+	while (!this->defferedRenderStack.empty())
 	{
-		target.draw(this->collisionBox);
-		for (auto& x : this->map)
-		{
-			for (auto& y : x)
-			{
-				for (auto& z : y)
-				{
-					for (auto& k : z)
-					{
-						if (k != nullptr)
-						{
-							k->render(target);
-							if (k->getCollision())
-							{
-								this->collisionBox.setPosition(k->getPosition());
-								target.draw(this->collisionBox);
-							}
-						}
-					}
-				}
-			}
-		}
+		this->defferedRenderStack.top()->render(target);
+		this->defferedRenderStack.pop();
 	}
 }
 
@@ -212,7 +213,7 @@ void TileMap::saveToFile(const std::string file_name)
 				{
 					for (int k = 0; k < this->map[x][y][z].size(); ++k)
 					{
-						file << x << " " << y << " " << z << " " << k << " "
+						file << x << " " << y << " " << z << " "
 							<< this->map[x][y][z][k]->getAsString() << " ";
 					}
 				}
